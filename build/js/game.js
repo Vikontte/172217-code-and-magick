@@ -390,23 +390,56 @@ window.Game = (function() {
         window.removeEventListener('keydown', this._pauseListener);
       }
     },
+    // Отрисовка сообщения в паузе
+    _drawPauseMessage: function(messageText, pointZeroX, pointZeroY) {
+      var MESSAGE_WIDTH = 240;
+      var MESSAGE_HEIGHT = 120;
 
+      this.ctx.beginPath();
+      this.ctx.moveTo(pointZeroX + 10, pointZeroY + 10);
+      this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH + 10, pointZeroY - 10);
+      this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH + 10, pointZeroY - MESSAGE_HEIGHT + 10);
+      this.ctx.lineTo(pointZeroX + 20, pointZeroY - MESSAGE_HEIGHT + 10);
+      this.ctx.closePath();
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.ctx.fill();
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(pointZeroX, pointZeroY);
+      this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH, pointZeroY - 20);
+      this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH, pointZeroY - MESSAGE_HEIGHT);
+      this.ctx.lineTo(pointZeroX + 10, pointZeroY - MESSAGE_HEIGHT);
+      this.ctx.closePath();
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.fill();
+
+      this.ctx.fillStyle = '#000000';
+      this.ctx.font = '16px PT Mono black';
+      var i;
+      for (i = 0; i < messageText.length; i++) {
+        this.ctx.fillText(messageText[i], pointZeroX + 20, pointZeroY - 100 + i * 25);
+      }
+    },
     /**
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          this._drawPauseMessage(['Поздравляем!', 'Вы выиграли! ', 'Что начать заново, ', 'нажмите на пробел.'], 250, 220);
+        //   console.log('you have won!');
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          this._drawPauseMessage(['Вы проиграли!', 'Игра окончена. ', 'Чтобы продолжить, ', 'нажмите на пробел.'], 300, 220);
+        //   console.log('you have failed!');
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          this._drawPauseMessage(['Пауза!', 'Чтобы продолжить, ', 'нажмите на пробел.'], 300, 220);
+        //   console.log('game is on pause!');
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          this._drawPauseMessage(['Я умею перемещаться', 'и летать по нажатию', 'на стрелки. А если нажать', 'шифт, я выстрелю файрболом.'], 300, 220);
+        //   console.log('welcome to the game! Press Space to start');
           break;
       }
     },
