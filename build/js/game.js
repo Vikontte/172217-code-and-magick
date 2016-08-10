@@ -394,34 +394,25 @@ window.Game = (function() {
     _drawPauseMessage: function(messageText) {
       var MESSAGE_WIDTH = 240;
       var MESSAGE_HEIGHT = 120;
-      var pointZeroX = (WIDTH - MESSAGE_WIDTH) / 2;
-      var pointZeroY = HEIGHT - MESSAGE_HEIGHT;
 
-      this._drawPolygon = function() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(pointZeroX + 10, pointZeroY + 10);
-        this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH + 10, pointZeroY - 10);
-        this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH + 10, pointZeroY - MESSAGE_HEIGHT + 10);
-        this.ctx.lineTo(pointZeroX + 20, pointZeroY - MESSAGE_HEIGHT + 10);
-        this.ctx.closePath();
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fill();
-
+      this._drawPolygon = function(pointZeroX, pointZeroY, color) {
         this.ctx.beginPath();
         this.ctx.moveTo(pointZeroX, pointZeroY);
         this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH, pointZeroY - 20);
         this.ctx.lineTo(pointZeroX + MESSAGE_WIDTH, pointZeroY - MESSAGE_HEIGHT);
         this.ctx.lineTo(pointZeroX + 10, pointZeroY - MESSAGE_HEIGHT);
         this.ctx.closePath();
-        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.fillStyle = color;
         this.ctx.fill();
       };
-      this._drawPolygon();
+      var pointZeroX = (WIDTH - MESSAGE_WIDTH) / 2;
+      var pointZeroY = HEIGHT - MESSAGE_HEIGHT;
+      this._drawPolygon(pointZeroX + 10, pointZeroY + 10, 'rgba(0, 0, 0, 0.7)');
+      this._drawPolygon(pointZeroX, pointZeroY, '#FFFFFF');
 
       this.ctx.fillStyle = '#000000';
       this.ctx.font = '16px PT Mono black';
-      for (i = 0; i < messageText.length; i++) {
-        var i;
+      for (var i = 0; i < messageText.length; i++) {
         this.ctx.fillText(messageText[i], pointZeroX + 20, pointZeroY - 100 + i * 25);
       }
     },
