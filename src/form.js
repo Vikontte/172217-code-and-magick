@@ -15,8 +15,7 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
-      formSubmitButton.setAttribute('disabled', 'disabled');
-      textLabel.classList.add('invisible');
+      this.check();
       cb();
     },
 
@@ -32,24 +31,19 @@ window.form = (function() {
       var text = formElement['review-text'].value;
       var mark = +formElement['review-mark'].value;
       var nameLabel = formContainer.querySelector('.review-fields-name');
+      nameLabel.classList.add('invisible');
+      textLabel.classList.add('invisible');
 
+      var state = true;
       if (mark < 3 && !text.length) {
         textLabel.classList.remove('invisible');
-        if (!name.length) {
-          nameLabel.classList.remove('invisible');
-        } else {
-          nameLabel.classList.add('invisible');
-        }
-        return false;
+        state = false;
       }
       if (!name.length) {
         nameLabel.classList.remove('invisible');
-        textLabel.classList.add('invisible');
-        return false;
+        state = false;
       }
-      nameLabel.classList.add('invisible');
-      textLabel.classList.add('invisible');
-      return true;
+      return state;
     },
     check: function() {
       var res = form.checkFields();
