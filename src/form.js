@@ -2,47 +2,10 @@
 
 window.form = (function() {
   var formContainer = document.querySelector('.overlay-container');
+  var formElement = formContainer.querySelector('.review-form');
   var formCloseButton = document.querySelector('.review-form-close');
-
-  var userName = document.querySelector('#review-name');
-  var userNameMarker = document.querySelector('.review-fields-name');
-  var reviewText = document.querySelector('#review-text');
-  var reviewTextMarker = document.querySelector('.review-fields-text');
-  var reviewFormControl = document.querySelector('.review-form-control');
-  var reviewMark = document.getElementsByName('review-mark');
-
-// хочу вытащить значение value у radio checked и по нему задать условие
-// в итоге условие работает только после того как отправил запрос и вернулся обратно на страницу
-  for (var i = 0; i < reviewMark.length; i++) {
-    if ((reviewMark[i].checked) && (reviewMark[i].value < 3)) {
-      reviewText.setAttribute('required', 'required');
-      reviewTextMarker.classList.remove('invisible');
-      reviewText.oninput = function() {
-        reviewTextMarker.classList.add('invisible');
-        reviewFormControl.removeAttribute('disabled', 'disabled');
-      };
-    } else if ((reviewMark[i].checked) && (reviewMark[i].value > 2)) {
-      reviewText.removeAttribute('required', 'required');
-      reviewTextMarker.classList.add('invisible');
-      reviewFormControl.removeAttribute('disabled', 'disabled');
-    }
-  }
-// в сафари на маке не работает
-  reviewText.oninvalid = function() {
-    reviewFormControl.setAttribute('disabled', 'disabled');
-    reviewTextMarker.classList.remove('invisible');
-  };
-// в сафари на маке не работает
-  userName.oninvalid = function() {
-    reviewFormControl.setAttribute('disabled', 'disabled');
-    userNameMarker.classList.remove('invisible');
-  };
-// в сафари на маке не работает
-  userName.setAttribute('required', 'required');
-  userName.oninput = function() {
-    reviewFormControl.removeAttribute('disabled', 'disabled');
-    userNameMarker.classList.add('invisible');
-  };
+  var textLabel = formContainer.querySelector('.review-fields-text');
+  var formSubmitButton = formContainer.querySelector('.review-submit');
 
   var form = {
     onClose: null,
@@ -52,6 +15,8 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
+      formSubmitButton.setAttribute('disabled', 'disabled');
+      textLabel.classList.add('invisible');
       cb();
     },
 
@@ -61,9 +26,48 @@ window.form = (function() {
       if (typeof this.onClose === 'function') {
         this.onClose();
       }
+    },
+    checkFields: function() {
+      var name = formElement['review-name'].value;
+      var text = formElement['review-text'].value;
+      var mark = +formElement['review-mark'].value;
+      var nameLabel = formContainer.querySelector('.review-fields-name');
+
+      if (mark < 3 && !text.length) {
+        textLabel.classList.remove('invisible');
+        if (!name.length) {
+          nameLabel.classList.remove('invisible');
+        } else {
+          nameLabel.classList.add('invisible');
+        }
+        return false;
+      }
+      if (!name.length) {
+        nameLabel.classList.remove('invisible');
+        textLabel.classList.add('invisible');
+        return false;
+      }
+      nameLabel.classList.add('invisible');
+      textLabel.classList.add('invisible');
+      return true;
+    },
+    check: function() {
+      var res = form.checkFields();
+
+      if (res) {
+        formSubmitButton.removeAttribute('disabled');
+
+      } else {
+        formSubmitButton.setAttribute('disabled', 'disabled');
+      }
     }
   };
 
+  formElement['review-name'].oninput = form.check;
+  formElement['review-text'].oninput = form.check;
+  formElement['review-mark'].forEach(function(input) {
+    input.onclick = form.check;
+  });
 
   formCloseButton.onclick = function(evt) {
     evt.preventDefault();
