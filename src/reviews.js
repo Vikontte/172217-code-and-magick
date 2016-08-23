@@ -25,24 +25,23 @@ var IMAGE_LOAD_TIMEOUT = 10000;
 
 var getReviewElement = function(data, container) {
   var element = elementToClone.cloneNode(true);
+  // в задании в итоговой превьюшке с отзывами почему-то спрятана оценка
+  // так надо? потом будем отрисовать?
   element.querySelector('.review-rating').classList.add('invisible');
   element.querySelector('.review-text').textContent = data.description;
   container.appendChild(element);
 
   var authorImage = new Image();
-  var nodeImage = element.querySelectorAll('img');
+  var nodeImage = element.querySelector('img');
   var authorImageLoadTimeout;
 
   authorImage.onload = function(event) {
     clearTimeout(authorImageLoadTimeout);
-
-    // консоль выдает ошибку
-    // reviews.js:42 Uncaught TypeError: nodeImage.setAttribute is not a function
-
-    nodeImage.setAttribute('src', event.target.src);
-
-    console.log(nodeImage);
+    nodeImage.src = event.target.src;
+    nodeImage.width = 124;
+    nodeImage.height = 124;
   };
+
   authorImage.onerror = function() {
     element.classList.add('review-load-failure');
   };
@@ -60,6 +59,8 @@ var getReviewElement = function(data, container) {
 window.onload = function() {
   createCallback('http://localhost:1506/api/reviews', function(data) {
     var reviews = data;
+// по заданию перед отрисовкой отзывов мы прячем блок с фильтрами,
+// после отрисовки - отображаем. не поняла, зачем это
     document.querySelector('.reviews-filter').classList.add('invisible');
     console.log('invisible');
     reviews.forEach(function(review) {
@@ -67,6 +68,5 @@ window.onload = function() {
     });
     document.querySelector('.reviews-filter').classList.remove('invisible');
     console.log('visible');
-    console.log(reviews);
   });
 };
