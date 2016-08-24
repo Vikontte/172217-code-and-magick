@@ -25,8 +25,6 @@ var IMAGE_LOAD_TIMEOUT = 10000;
 
 var getReviewElement = function(data, container) {
   var element = elementToClone.cloneNode(true);
-  // в задании в итоговой превьюшке с отзывами почему-то спрятана оценка
-  // так надо? потом будем отрисовать?
   element.querySelector('.review-rating').classList.add('invisible');
   element.querySelector('.review-text').textContent = data.description;
   container.appendChild(element);
@@ -43,6 +41,7 @@ var getReviewElement = function(data, container) {
   };
 
   authorImage.onerror = function() {
+    clearTimeout(authorImageLoadTimeout);
     element.classList.add('review-load-failure');
   };
   authorImage.src = data.author.picture;
@@ -59,8 +58,6 @@ var getReviewElement = function(data, container) {
 window.onload = function() {
   createCallback('http://localhost:1506/api/reviews', function(data) {
     var reviews = data;
-// по заданию перед отрисовкой отзывов мы прячем блок с фильтрами,
-// после отрисовки - отображаем. не поняла, зачем это
     document.querySelector('.reviews-filter').classList.add('invisible');
     console.log('invisible');
     reviews.forEach(function(review) {
