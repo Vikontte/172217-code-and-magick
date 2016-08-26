@@ -1,8 +1,21 @@
 'use strict';
 
-require('./form');
-require('./game');
-require('./reviews');
+define([
+  './form',
+], function(form) {
+  window.form = form();
+});
+define([
+  './game',
+], function(game) {
+  window.Game = game();
+});
+define([
+  './reviews',
+], function(reviews) {
+  window.onload = reviews();
+});
+
 
 (function() {
   var game = new window.Game(document.querySelector('.demo'));
