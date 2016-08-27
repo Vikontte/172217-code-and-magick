@@ -1,14 +1,15 @@
 'use strict';
 
+var formContainer = document.querySelector('.overlay-container');
+var formElement = formContainer.querySelector('.review-form');
+var formCloseButton = document.querySelector('.review-form-close');
+var textLabel = formContainer.querySelector('.review-fields-text');
+var formSubmitButton = formContainer.querySelector('.review-submit');
+var browserCookies = require('browser-cookies');
+
+
 define(function() {
   return function() {
-    var formContainer = document.querySelector('.overlay-container');
-    var formElement = formContainer.querySelector('.review-form');
-    var formCloseButton = document.querySelector('.review-form-close');
-    var textLabel = formContainer.querySelector('.review-fields-text');
-    var formSubmitButton = formContainer.querySelector('.review-submit');
-    var browserCookies = require('browser-cookies');
-
     var form = {
       onClose: null,
 
