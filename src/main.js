@@ -15,9 +15,28 @@ define([
 ], function(reviews) {
   window.onload = reviews();
 });
+define([
+  './gallery',
+], function(gallery) {
+  window.Gallery = gallery();
+});
 
 
 (function() {
+  var nodePhotogallery = document.querySelector('.photogallery');
+  var srcScreenshots = [];
+  nodePhotogallery.querySelectorAll('img').forEach(function(img, i) {
+    srcScreenshots[i] = img.src;
+  });
+  srcScreenshots.shift();
+
+  var gallery = new window.Gallery(srcScreenshots);
+  nodePhotogallery.querySelectorAll('.photogallery-image').forEach(function(link, i) {
+    link.onclick = function() {
+      gallery.show(i);
+    };
+  });
+
   var game = new window.Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
