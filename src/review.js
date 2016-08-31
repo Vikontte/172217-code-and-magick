@@ -1,31 +1,64 @@
 'use strict';
 
-var reviewsContainer = document.querySelector('.reviews-list');
-var templateElement = document.querySelector('template');
-var elementToClone;
-
-if ('content' in templateElement) {
-  elementToClone = templateElement.content.querySelector('.review');
-} else {
-  elementToClone = templateElement.querySelector('.review');
-}
-var IMAGE_LOAD_TIMEOUT = 10000;
-
 define(function() {
-  return function(data, container) {
-    container = reviewsContainer;
+  return function(data) {
+    return new Review(data);
+  };
+});
+
+var reviewsContainer = document.querySelector('.reviews-list');
+
+var Review = function(data) {
+  this.container = reviewsContainer;
+  this.data = data;
+  this.element = window.getReviewElement(this.data);
+  this.reviewQuiz = this.element.querySelector('.review-quiz');
+  this.container.appendChild(this.element);
+  var self = this;
+
+  this.reviewQuiz.onclick = function(evt) {
+    if (evt.target.classList.contains('review-quiz-answer')) {
+      self.onQuizAnswerClick(evt.target);
+    }
+  };
+
+  Review.prototype.onQuizAnswerClick = function(activeElement) {
+    var previosReviewQuizAnswer = this.element.querySelector('.review-quiz-answer-active');
+    if (previosReviewQuizAnswer) {
+      previosReviewQuizAnswer.classList.remove('review-quiz-answer-active');
+    }
+    activeElement.classList.add('review-quiz-answer-active');
+  };
+
+  Review.prototype.remove = function() {
+    this.reviewQuiz.onclick = null;
+  };
+};
+
+(function() {
+  var templateElement = document.querySelector('template');
+  var elementToClone;
+
+  var IMAGE_LOAD_TIMEOUT = 10000;
+
+  if ('content' in templateElement) {
+    elementToClone = templateElement.content.querySelector('.review');
+  } else {
+    elementToClone = templateElement.querySelector('.review');
+  }
+
+  window.getReviewElement = function(data) {
     var element = elementToClone.cloneNode(true);
     element.querySelector('.review-rating').classList.add('invisible');
     element.querySelector('.review-text').textContent = data.description;
-    container.appendChild(element);
 
     var authorImage = new Image();
     var nodeImage = element.querySelector('img');
     var authorImageLoadTimeout;
 
-    authorImage.onload = function(event) {
+    authorImage.onload = function(evt) {
       clearTimeout(authorImageLoadTimeout);
-      nodeImage.src = event.target.src;
+      nodeImage.src = evt.target.src;
       nodeImage.width = 124;
       nodeImage.height = 124;
     };
@@ -43,4 +76,4 @@ define(function() {
 
     return element;
   };
-});
+})();
