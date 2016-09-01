@@ -3,11 +3,11 @@
 define([
   './load',
   './review',
-], function(createCallback, getReviewElement) {
+], function(createCallback, Review) {
   return function() {
     createCallback('//localhost:1506/api/reviews', function(reviews) {
       reviews.forEach(function(review) {
-        getReviewElement(review);
+        return new Review(review);
       });
     });
   };
