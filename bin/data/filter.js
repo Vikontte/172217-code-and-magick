@@ -9,17 +9,15 @@ module.exports = function(list, filterID) {
         return b.created - a.created;
       });
     case 'reviews-good':
-      var reviewsGood = list.filter(function(review) {
+      return list.filter(function(review) {
         return review.rating >= 3;
-      });
-      return reviewsGood.sort(function(a, b) {
+      }).sort(function(a, b) {
         return b.rating - a.rating;
       });
     case 'reviews-bad':
-      var reviewsBad = list.filter(function(review) {
+      return list.filter(function(review) {
         return review.rating < 3;
-      });
-      return reviewsBad.sort(function(a, b) {
+      }).sort(function(a, b) {
         return a.rating - b.rating;
       });
     case 'reviews-popular':
