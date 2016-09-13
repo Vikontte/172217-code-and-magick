@@ -281,6 +281,7 @@ define(function() {
         self.headerCloudsContainer.style.backgroundPositionX = backgroundX + '%';
       };
 
+    //   универсальная функция throttle
       var throttle = function(callbackFn, timeout) {
         return function() {
           if (Date.now() - lastCall >= timeout) {
