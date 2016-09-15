@@ -11,7 +11,7 @@ define([
     var reviewsControlsMore = document.querySelector('.reviews-controls-more');
     var filtersContainer = document.querySelector('.reviews-filter');
     var filtersItem = document.getElementsByName('reviews');
-    var activeFilter = localStorage.getItem('lastFilter');
+    var activeFilter = localStorage.getItem('lastFilter') || 'all reviews';
     var pageNumber = 0;
 
     var loadReviews = function(filter, currentPageNumber) {
@@ -23,14 +23,11 @@ define([
         reviews.forEach(function(review) {
           return new Review(review);
         });
-        console.log(filter);
-
       });
     };
 
     reviewsControlsMore.classList.remove('invisible');
     loadReviews(activeFilter, pageNumber);
-    console.log(filtersItem);
     filtersItem.forEach(function(item) {
       if (item.id === activeFilter) {
         item.setAttribute('checked', 'checked');
