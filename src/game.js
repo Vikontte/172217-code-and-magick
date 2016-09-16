@@ -259,52 +259,23 @@ define(function() {
       this._pauseListener = this._pauseListener.bind(this);
 
       this.setDeactivated(false);
-      var self = this;
 
       // Параллакс. Проверка видимости блока с облаками и блока с игрой.
-
       var THROTTLE_TIMEOUT = 100;
       this.headerCloudsContainer = document.querySelector('.header-clouds');
       this.gameContainer = document.querySelector('.demo');
-      var backgroundX = 50;
-      var previousPageYOffset = 0;
-      var lastCall = Date.now();
+      this.backgroundX = 50;
+      this.previousPageYOffset = 0;
+      this.lastCall = Date.now();
 
-      this.moveHeaderClouds = function() {
-        if (window.pageYOffset > previousPageYOffset) {
-          previousPageYOffset = window.pageYOffset;
-          backgroundX--;
-        } else if (window.pageYOffset < previousPageYOffset) {
-          previousPageYOffset = window.pageYOffset;
-          backgroundX++;
-        }
-        self.headerCloudsContainer.style.backgroundPositionX = backgroundX + '%';
-      };
-
-    //   универсальная функция throttle
-      var throttle = function(callbackFn, timeout) {
-        return function() {
-          if (Date.now() - lastCall >= timeout) {
-            callbackFn();
-            lastCall = Date.now();
-          }
-        };
-      };
-
-      this.onScrollOptimized = throttle(function() {
-        if (!self.isVisibleContainer(self.headerCloudsContainer)) {
-          window.removeEventListener('scroll', self.moveHeaderClouds);
-        } else {
-          window.addEventListener('scroll', self.moveHeaderClouds);
-        }
-        if (!self.isVisibleContainer(self.gameContainer)) {
-          self.setGameStatus(window.Game.Verdict.PAUSE);
-        }
-      }, THROTTLE_TIMEOUT);
+      this.onScroll = this.onScroll.bind(this);
+      this.moveHeaderClouds = this.moveHeaderClouds.bind(this);
+      this.onScrollOptimized = this.throttle(this.onScroll, THROTTLE_TIMEOUT);
+      this.onScrollOptimized = this.onScrollOptimized.bind(this);
+      window.addEventListener('scroll', this.onScrollOptimized);
     };
 
     Game.prototype = {
-
       isVisibleContainer: function(container) {
         if (container.getBoundingClientRect().bottom >= 0) {
           return true;
@@ -312,7 +283,34 @@ define(function() {
           return false;
         }
       },
-
+      moveHeaderClouds: function() {
+        if (window.pageYOffset > this.previousPageYOffset) {
+          this.previousPageYOffset = window.pageYOffset;
+          this.backgroundX--;
+        } else if (window.pageYOffset < this.previousPageYOffset) {
+          this.previousPageYOffset = window.pageYOffset;
+          this.backgroundX++;
+        }
+        this.headerCloudsContainer.style.backgroundPositionX = this.backgroundX + '%';
+      },
+      throttle: function(callbackFn, timeout) {
+        return function() {
+          if (Date.now() - this.lastCall >= timeout) {
+            callbackFn();
+            this.lastCall = Date.now();
+          }
+        };
+      },
+      onScroll: function() {
+        if (!this.isVisibleContainer(this.headerCloudsContainer)) {
+          window.removeEventListener('scroll', this.moveHeaderClouds);
+        } else {
+          window.addEventListener('scroll', this.moveHeaderClouds);
+        }
+        if (!this.isVisibleContainer(this.gameContainer)) {
+          this.setGameStatus(window.Game.Verdict.PAUSE);
+        }
+      },
       /**
        * Текущий уровень игры.
        * @type {Level}
