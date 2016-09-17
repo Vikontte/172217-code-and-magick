@@ -25,13 +25,13 @@ define([
 (function() {
   var nodePhotogallery = document.querySelector('.photogallery');
   var srcScreenshots = [];
-  nodePhotogallery.querySelectorAll('img').forEach(function(img, i) {
+  Array.prototype.forEach.call(nodePhotogallery.querySelectorAll('img'), function(img, i) {
     srcScreenshots[i] = img.src;
   });
   srcScreenshots.shift();
 
   var gallery = new window.Gallery(srcScreenshots);
-  nodePhotogallery.querySelectorAll('.photogallery-image').forEach(function(link, i) {
+  Array.prototype.forEach.call(nodePhotogallery.querySelectorAll('.photogallery-image'), function(link, i) {
     link.onclick = function() {
       gallery.show(i);
     };

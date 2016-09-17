@@ -87,7 +87,7 @@ define(function() {
 
     formElement['review-name'].oninput = form.check;
     formElement['review-text'].oninput = form.check;
-    formElement['review-mark'].forEach(function(input) {
+    Array.prototype.forEach.call(formElement['review-mark'], function(input) {
       input.onclick = form.check;
     });
     formElement.onsubmit = form.saveCookies;

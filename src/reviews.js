@@ -28,7 +28,7 @@ define([
 
     reviewsControlsMore.classList.remove('invisible');
     loadReviews(activeFilter, pageNumber);
-    filtersItem.forEach(function(item) {
+    Array.prototype.forEach.call(filtersItem, function(item) {
       if (item.id === activeFilter) {
         item.setAttribute('checked', 'checked');
       }
